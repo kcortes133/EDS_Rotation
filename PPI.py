@@ -2,6 +2,8 @@ import requests
 import pandas as pd
 import copy, json
 from query import *
+import graphviz
+
 
 solr_url = 'https://solr.monarchinitiative.org/solr/golr/select'
 url = 'https://api.monarchinitiative.org/api/bioentity/gene/NCBIGene:1289/interactions'

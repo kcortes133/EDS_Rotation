@@ -1,7 +1,9 @@
+# TODO: ontobio doesnt work
+
 import pandas as pd
 import requests
 from pprint import pprint
-import ontobio
+#import ontobio
 from ontobio.ontol_factory import OntologyFactory
 
 from ontobio.io.gafparser import GafParser
@@ -48,7 +50,7 @@ def make_assocs(group, parse=False):
     p = GafParser()
     afactory = AssociationSetFactory()
     ofactory = OntologyFactory()
-    ont = ofactory.create('go')
+    ont = ofactory.create('pato')
 
     url = "http://geneontology.org/gene-associations/gene_association.{}.gz".format(group)
     if group == 'human':

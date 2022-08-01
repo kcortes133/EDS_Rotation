@@ -1,3 +1,8 @@
+# Author: Katherina Cortes
+# Date: July 26, 2022
+# Purpose: get Protein interactions
+
+
 import pandas as pd
 import copy
 from query import *

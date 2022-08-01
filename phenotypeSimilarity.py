@@ -1,35 +1,61 @@
-import requests
-from itertools import chain
-from io import StringIO
-from tqdm import tqdm
-
-import numpy as np
-
-from scipy.sparse import coo_matrix
-import seaborn as sns
 import pandas as pd
+import apiRequests
 
 
-def getWikiIDs(dataframe):
+def getGenes2Pheno(g2pfile):
+    df = pd.read_csv(g2pfile, sep='\t')
+    return {k: g['HPO-Term-ID'].tolist() for k,g in df.groupby('entrez-gene-symbol')}
 
-    api_url = "http://garbanzo.sulab.org/"
-    c = ' '.join([x.upper() for x in dataframe.gene])
-    endpoint = "exactmatches/"
-    params = {'c': c}
-    print('url',api_url+endpoint)
-    r = requests.get(api_url + endpoint, params=params)
-    #qids = [x for x in r.json() if "wd" in x]
 
+# TODO: can get ancestors as well
+# additively build
+def jaccard(list1, list2):
+    intersection = len(list(set(list1).intersection(list2)))
+    union = (len(list1) + len(list2)) - intersection
+
+    return float(intersection)/union
+
+
+def simSearchJ(genes, g2p):
+    similarity = {}
+
+    for gene in genes:
+        similarity[gene] = {}
+        for g in g2p:
+            simScore = jaccard(genes[gene], g2p[g])
+            similarity[gene][g] = simScore
+
+    return similarity
+
+
+
+def simSearch(genes, simScoreURL):
+    simMatches = {}
+
+    for g in genes:
+        phenos = genes[g]
+        # remove EFO - experimental factor ontology ids
+        phenos = [x for x in phenos if 'EFO:' not in x]
+        m = apiRequests.getSimSearch(simScoreURL + '&id='.join(phenos))
+        simMatches[g] = m
+    return simMatches
+
+
+def writeGenestoFile(genes, file):
+    with open(file, 'w') as f:
+        for g in genes:
+            f.write(g+'\n')
     return
 
-def getPhenoTerms(url, genes):
-    url = "https://api.monarchinitiative.org/api/mart/gene/phenotype/NCBITaxon:9606"
-    d = requests.get(url).json()
-    phenos = {x['subject']: set(x['objects']) for x in d}
-    return phenos
 
-def getPhenotypes(gene_id):
-    """Query Monarch to determine the phenotypes associated with a NCBI gene id."""
-    url = "https://api.monarchinitiative.org/api/bioentity/gene/{}/phenotypes/".format(gene_id)
-    res = requests.get(url)
-    return set(res.json()["objects"])
+def getGeneSyms(geneMappings, revOrthologs, geneIDS):
+    syms = []
+    for gene in geneIDS:
+        if 'HGNC' in gene:
+            syms.append(geneMappings[gene])
+        elif 'MGI' in gene:
+            if gene in revOrthologs:
+                syms.extend(list(revOrthologs[gene]))
+        else: syms.append(gene)
+    print(syms)
+    return syms

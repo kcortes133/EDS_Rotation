@@ -1,5 +1,5 @@
 import pandas as pd
-import apiRequests
+from src import apiRequests
 
 
 def getGenes2Pheno(g2pfile):

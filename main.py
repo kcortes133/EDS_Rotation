@@ -21,10 +21,8 @@ We also want to do Phenotypes associated with EDS
 # https://github.com/NCATS-Tangerine/cq-notebooks/tree/master/Orange_Demonstrator_1_CQs/OrangeQ1.1_PPI_Network
 
 import pandas as pd
-import PPI, phenotypeSimilarity, apiRequests
+from src import apiRequests, PPI, phenotypeSimilarity, embeddingsFile
 import argparse
-
-import embeddingsFile
 
 parser = argparse.ArgumentParser(description='Ehlers Danlos Exploratory Work')
 parser.add_argument('--ppi', metavar='Protien-Protien-Interactors', type=bool, default=False, help='get interactors')

@@ -36,6 +36,7 @@ def loadGraph():
 def geneMappings():
     mappingsF = 'http://ftp.ebi.ac.uk/pub/databases/genenames/hgnc/archive/quarterly/tsv/hgnc_complete_set_2022-04-01.txt'
     mappingDB = pd.read_csv(mappingsF, sep='\t')
+    print(mappingDB)
     return mappingDB[['hgnc_id', 'symbol']]
 
 
@@ -59,6 +60,6 @@ rankedGenes = sorted(cosine_sims_eds_vs_genes.items(), key=lambda item: item[1],
 for gene in rankedGenes[-20:]:
     if 'HGNC' in gene[0]:
         print(gene)
-        print(geneMappingsDict[gene[0]])
+        #print(geneMappingsDict[gene[0]])
 
 

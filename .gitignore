@@ -152,3 +152,12 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+*.tsv
+*.json
+*.gz*
+
+embeddings/
+okapi_tfidf_weighted_textual_embedding/
+precomputed_word_embedding/
+graphs/
+
